@@ -1,4 +1,3 @@
-// arrumando AQUI OPCAO 1
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -149,14 +148,6 @@ class _EvaluationState extends State<Evaluation> {
                   elevation: 0.0,
                 ),
 
-              // Text("ECG time: " + _serverEval.ECGTime.toString(),
-              //   style: TextStyle(height: 1.2, fontSize: 20),),
-              // Text("Heart rate: " + _serverEval.FreqCard.toString(),
-              //     style: TextStyle(height: 1.2, fontSize: 20)),
-              // Text("Good complex: " + _serverEval.GoodComplex.toString(),
-              //     style: TextStyle(height: 1.2, fontSize: 20)),
-              // Text("Bad complex: " + _serverEval.BadComplex.toString(),
-              //     style: TextStyle(height: 1.2, fontSize: 20)),
               TextButton(
                   onPressed: (){
                     Navigator.of(context).pop();
@@ -327,116 +318,3 @@ class _EvaluationState extends State<Evaluation> {
     );
   }
 }
-
-
-
-
-
-//
-// AQUI OPCAO 1
-// import 'package:flutter/material.dart';
-//
-// class Evaluation extends StatefulWidget {
-//   const Evaluation({Key? key}) : super(key: key);
-//
-//   @override
-//   _EvaluationState createState() => _EvaluationState();
-// }
-//
-// class _EvaluationState extends State<Evaluation> {
-//   @override
-//   Widget build(BuildContext context) {
-//     var screenSize = MediaQuery.of(context).size;
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Evaluation'),
-//       ),
-//       body: SafeArea(
-//           child: Center(
-//               child: Padding(
-//                   padding: EdgeInsets.only(top: screenSize.height * 0.12),
-//                     child: ListView(
-//                       children: <Widget>[
-//                         Card(
-//                           child: ListTile(
-//                             leading: Icon(Icons.add_circle, size: 40,),
-//                             title: Text('Capture new ECG', style: TextStyle(height: 1, fontSize: 20),),
-//                             subtitle: Text('Here is a second line'),
-//                             onTap: (){
-//                               Navigator.pushNamed(context, '/AQUI');
-//                             },
-//                           ),
-//                         ),
-//                         Card(
-//                           child: ListTile(
-//                             leading: FittedBox(
-//                               child: Icon(Icons.folder, size: 40,),
-//                               fit: BoxFit.fitHeight,
-//                             ),
-//                             title: Text('Find an ECG file', style: TextStyle(height: 1, fontSize: 20),),
-//                             subtitle: Text('Here is a second line'),
-//                             onTap: (){
-//                               Navigator.pushNamed(context, '/AQUI');
-//                             },
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//               ),
-//           ),
-//       ),
-//     );
-//   }
-
-//AQUI OPCAO 2
-//
-// import 'package:flutter/material.dart';
-//
-// class Evaluation extends StatefulWidget {
-//   const Evaluation({Key? key}) : super(key: key);
-//
-//   @override
-//   _EvaluationState createState() => _EvaluationState();
-// }
-//
-// class _EvaluationState extends State<Evaluation> {
-//   @override
-//   Widget build(BuildContext context) {
-//     var screenSize = MediaQuery.of(context).size;
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Evaluation'),
-//       ),
-//       body: SafeArea(
-//         child: Center(
-//           child: Padding(
-//               padding: EdgeInsets.only(top: screenSize.height * 0.12),
-//               child: Column(
-//                 children: <Widget>[
-//
-//                   ElevatedButton.icon(
-//                       icon: Icon(Icons.folder, size: 20,),
-//                       label: Text('Find an ECG file', style: TextStyle(height: 1, fontSize: 20),),
-//
-//                       onPressed: (){
-//                         Navigator.pushNamed(context, '/placeSensors');
-//                       },
-//                   ),
-//
-//                   ElevatedButton.icon(
-//                       icon: Icon(Icons.add_circle, size: 20,),
-//                       label: Text('Capture new ECG', style: TextStyle(height: 1, fontSize: 20),),
-//
-//                       onPressed: (){
-//                         Navigator.pushNamed(context, '/placeSensors');
-//                       },
-//                   )
-//
-//                 ],
-//               )
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }

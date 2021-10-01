@@ -5,15 +5,6 @@ CommunicationWithServer communicationWithServerFromJson(String str) => Communica
 String communicationWithServerToJson(CommunicationWithServer data) => json.encode(data.toJson());
 
 class CommunicationWithServer {
-  // CommunicationWithServer({
-  //   this.IdMsg,
-  //   this.OpCode,
-  //   this.ECGTime,
-  //   this.ECGfile,
-  //   this.FreqCard,
-  //   this.GoodComplex,
-  //   this.BadComplex,
-  // });
 
   dynamic IdMsg;
   dynamic OpCode;
@@ -47,17 +38,4 @@ class CommunicationWithServer {
         GoodComplex: json["GoodComplex"],
         BadComplex: json["BadComplex"],
       );
-        
-
-  // Map<String, dynamic> toJson() =>
-  //     {
-  //       "IdMsg": IdMsg,
-  //       "OpCode": OpCode,
-  //       "ECGTime": ECGTime,
-  //       "ECGfile": ECGfile,
-  //       "FreqCard": FreqCard,
-  //       "GoodComplex": GoodComplex,
-  //       "BadComplex": BadComplex,
-  //     };
-
 }

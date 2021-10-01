@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:good_heart/colors.dart';
 import 'package:good_heart/main.dart';
@@ -24,15 +22,16 @@ class _ConnectionPage extends State<ConnectionPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _textEditingControllerIP = TextEditingController();
   final TextEditingController _textEditingControllerConnectionTest = TextEditingController();
+  final TextEditingController _textForAppearText = TextEditingController();
+
   Wrapper? socket;
-  int _pressed_ok_in_connect = 0;
+  int _pressedOkInConnect = 0;
   _ConnectionPage({this.socket});
 
   // Dialog Structure
   Future<void> showIPDialog(BuildContext context) async {
     return await showDialog(context: context,
         builder: (context){
-          // final TextEditingController _textEditingControllerIP = TextEditingController();
           bool isChecked = false;
           return StatefulBuilder(builder: (context,setState){
             return AlertDialog(
@@ -57,7 +56,7 @@ class _ConnectionPage extends State<ConnectionPage> {
                   child: Text('Ok'),
                   onPressed: (){
                     if(_formKey.currentState!.validate()){ // AQUI
-                      _pressed_ok_in_connect = 1;
+                      _pressedOkInConnect = 1;
                       // Do something like updating SharedPreferences or User Settings etc.
                       Navigator.of(context).pop();
                     }
@@ -81,8 +80,6 @@ class _ConnectionPage extends State<ConnectionPage> {
                   },
                   child: Text("Ok"),
               )
-
-
             ]
           );
     });
@@ -109,9 +106,8 @@ class _ConnectionPage extends State<ConnectionPage> {
     return await showDialog(context: context,
         builder: (context){
           return AlertDialog(
-            content: _checking_connection_text(_textEditingControllerConnectionTest),
+            content: _checkingConnectionText(_textEditingControllerConnectionTest),
 
-            //Text("\"" + _textEditingControllerConnectionTest.text + "\".", style: TextStyle(fontSize: 18),),
             actions: <Widget> [
               TextButton(
                   onPressed: (){
@@ -136,8 +132,6 @@ class _ConnectionPage extends State<ConnectionPage> {
                   },
                   child: Text("Ok"),
               )
-
-
             ]
           );
     });
@@ -147,7 +141,7 @@ class _ConnectionPage extends State<ConnectionPage> {
     return await showDialog(context: context,
         builder: (context){
           return AlertDialog(
-              content: _appear_text(_textEditingControllerConnectionTest),
+              content: _appearText(_textForAppearText),
               actions: <Widget> [
                 TextButton(
                   onPressed: (){
@@ -155,8 +149,6 @@ class _ConnectionPage extends State<ConnectionPage> {
                   },
                   child: Text("Ok"),
                 )
-
-
               ]
           );
         });
@@ -197,15 +189,15 @@ class _ConnectionPage extends State<ConnectionPage> {
                   onTap: () async {
                     await showIPDialog(context);
                     try {
-                      if(_pressed_ok_in_connect != 0) {
+                      if(_pressedOkInConnect != 0) {
                         socket!.setClient(await Socket.connect(
                             _textEditingControllerIP.text, 3333));
-                        _pressed_ok_in_connect = 0;
+                        _pressedOkInConnect = 0;
                       }
                       } catch(_) {
-                      if(_pressed_ok_in_connect != 0) {
+                      if(_pressedOkInConnect != 0) {
                         await showAlertUnableToConnect(context);
-                        _pressed_ok_in_connect = 0;
+                        _pressedOkInConnect = 0;
                       }
                     }
 
@@ -226,11 +218,11 @@ class _ConnectionPage extends State<ConnectionPage> {
                   onTap: () async {
                     try {
                       socket!.client!.close();
-                      _textEditingControllerConnectionTest.text = "Disconnected";
+                      _textForAppearText.text = "Disconnected";
                       await showAlertPassedSocket(context);
 
                     }catch(_) { // AQUI acho que tá com um bug
-                      _textEditingControllerConnectionTest.text = "Disconnected";
+                      _textForAppearText.text = "Disconnected";
                       await showAlertPassedSocket(context);
                       //await showAlertErrorSocket(context);
                     }
@@ -302,7 +294,7 @@ class _ConnectionPage extends State<ConnectionPage> {
   }
 }
 
-Widget _appear_text(_text){
+Widget _appearText(_text){
 
   const colorizeTextStyle = TextStyle(
     fontSize: 18.0,
@@ -330,7 +322,7 @@ Widget _appear_text(_text){
 }
 
 
-Widget _checking_connection_text(_text){
+Widget _checkingConnectionText(_text){
 
   const colorizeTextStyle = TextStyle(
     fontSize: 18.0,
