@@ -2,9 +2,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:good_heart/communication_with_server.dart';
 import 'package:good_heart/connection_page.dart';
+import 'colors.dart';
 import 'main.dart';
 
 class Evaluation extends StatefulWidget {
@@ -25,7 +28,8 @@ class _EvaluationState extends State<Evaluation> {
   String? chosenFileName;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _textEditingController = TextEditingController();
-  final CommunicationWithServer _serverEval = CommunicationWithServer();
+  CommunicationWithServer _serverEval = CommunicationWithServer();
+
 
   _EvaluationState({this.socket});
 
@@ -41,16 +45,22 @@ class _EvaluationState extends State<Evaluation> {
                   child: Container (
                     height: 300.0, // Change as per your requirement
                     width: 300.0,
+                    padding: EdgeInsets.only(top: 10),
                     child: ListView.builder(
-                    itemCount: listOfFiles.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(listOfFiles[index].ECGfile),
-                        onTap: () {
-                          chosenFileName = listOfFiles[index].ECGfile;
-                          Navigator.of(context).pop();
-                        },
-                      );
+                      itemCount: listOfFiles.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          child: ListTile(
+                            leading: Icon(Icons.description_rounded),
+                            title: Text(listOfFiles[index].ECGfile.toString(),
+                                style: TextStyle(height: 1.2, fontSize: 18)),
+                            dense: true,
+                            onTap: () {
+                              chosenFileName = listOfFiles[index].ECGfile.toString();
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        );
                       },
                     )
                   )
@@ -95,19 +105,64 @@ class _EvaluationState extends State<Evaluation> {
     return await showDialog(context: context,
         builder: (context){
           return AlertDialog(
-            content: Text("Evaluation ready!"),
-            actions: <Widget> [
-              Text("ECG time: " + _serverEval.ECGTime),
-              Text("Heart rate: " + _serverEval.FreqCard),
-              Text("Good complex: " + _serverEval.GoodComplex),
-              Text("Bad complex: " + _serverEval.BadComplex),
+            content: Text("Evaluation ready!", textAlign: TextAlign.center,
+                style: TextStyle(height: 2.5, fontSize: 20)),
+              actions: <Widget> [
+                Card(
+                  child: ListTile(
+                    leading: Icon(Icons.timer),
+                    title: Text("ECG time: " + _serverEval.ECGTime.toString(),
+                    style: TextStyle(height: 0, fontSize: 18),),
+                    dense: true,
+                  ),
+                  margin: EdgeInsets.only(left:20, right:20, top: 0),
+                  elevation: 0.0,
+                ),
+                Card(
+                  child: ListTile(
+                    leading: Icon(Icons.medical_services_rounded),
+                    title: Text("Heart rate: " + _serverEval.FreqCard.toString(),
+                        style: TextStyle(height: 0, fontSize: 18)),
+                    dense: true,
+                  ),
+                  margin: EdgeInsets.only(left:20, right:20, top: 10),
+                  elevation: 0.0,
+                ),
+                Card(
+                  child: ListTile(
+                    leading: Icon(Icons.sentiment_very_satisfied_rounded),
+                    title: Text("Good complex: " + _serverEval.GoodComplex.toString(),
+                        style: TextStyle(height: 0, fontSize: 18)),
+                    dense: true,
+                  ),
+                  margin: EdgeInsets.only(left:20, right:20, top: 10),
+                  elevation: 0.0,
+                ),
+                Card(
+                  child: ListTile(
+                    leading: Icon(Icons.sentiment_very_dissatisfied),
+                    title: Text("Bad complex: " + _serverEval.BadComplex.toString(),
+                        style: TextStyle(height: 0, fontSize: 18)),
+                    dense: true,
+                  ),
+                  margin: EdgeInsets.only(left:20, right:20, top: 10),
+                  elevation: 0.0,
+                ),
+
+              // Text("ECG time: " + _serverEval.ECGTime.toString(),
+              //   style: TextStyle(height: 1.2, fontSize: 20),),
+              // Text("Heart rate: " + _serverEval.FreqCard.toString(),
+              //     style: TextStyle(height: 1.2, fontSize: 20)),
+              // Text("Good complex: " + _serverEval.GoodComplex.toString(),
+              //     style: TextStyle(height: 1.2, fontSize: 20)),
+              // Text("Bad complex: " + _serverEval.BadComplex.toString(),
+              //     style: TextStyle(height: 1.2, fontSize: 20)),
               TextButton(
                   onPressed: (){
                     Navigator.of(context).pop();
                   },
                   child: Text("Ok"),
               )
-
 
             ]
           );
@@ -118,7 +173,7 @@ class _EvaluationState extends State<Evaluation> {
     return await showDialog(context: context,
         builder: (context){
           return AlertDialog(
-            content: Text("Looks like you are not conneted to a host."),
+            content: Text("You are not connected to a host."),
             actions: <Widget> [
               TextButton(
                   onPressed: (){
@@ -163,8 +218,9 @@ class _EvaluationState extends State<Evaluation> {
                         Card(
                             child: ListTile(
                               leading: Icon(Icons.add_circle, size: 40,),
-                              title: Text('Capture new ECG', style: TextStyle(height: 1, fontSize: 20),),
-                              subtitle: Text('Capture new ECG by placing sensors all over patients chest.'),
+                              title: Text('Capture new ECG', style: TextStyle(height: 1.4, fontSize: 20),),
+                              subtitle: Text('Capture new ECG by placing sensors all over patients chest.', style: TextStyle(height: 1.3),),
+                              isThreeLine: true,
                               onTap: () async {
                                 await showAlertNotDeveloped(context);
                                 // var fileChoice = CommunicationWithServer(IdMsg: null, OpCode: 200, ECGfile: _textEditingController.text);
@@ -175,9 +231,10 @@ class _EvaluationState extends State<Evaluation> {
                         ),
                         Card(
                             child: ListTile(
-                              leading: Icon(Icons.add_circle, size: 40,),
-                              title: Text('Patient captured ECG', style: TextStyle(height: 1, fontSize: 20),),
-                              subtitle: Text('Evaluates an ECG already captured from the patient.'),
+                              leading: Icon(Icons.pageview, size: 40,),
+                              title: Text('Patient captured ECG', style: TextStyle(height: 1.4, fontSize: 20),),
+                              subtitle: Text('Evaluates an ECG already captured from the patient.', style: TextStyle(height: 1.3),),
+                              isThreeLine: true,
                               onTap: () async {
                                 await showAlertNotDeveloped(context);
                                 // var fileChoice = CommunicationWithServer(IdMsg: null, OpCode: 300, ECGfile: _textEditingController.text);
@@ -192,25 +249,29 @@ class _EvaluationState extends State<Evaluation> {
                               child: Icon(Icons.folder, size: 40,),
                               fit: BoxFit.fitHeight,
                             ),
-                            title: Text('Find an ECG file', style: TextStyle(height: 1, fontSize: 20),),
-                            subtitle: Text('Find a previously generated file with ECG info.'),
+                            title: Text('Find an ECG file', style: TextStyle(height: 1.4, fontSize: 20),),
+                            subtitle: Text('Find a previously generated file with ECG info.', style: TextStyle(height: 1.3),),
+                            isThreeLine: true,
                             onTap: () async {
                               try {
+                                var sendToServer = CommunicationWithServer(IdMsg: "Get list of files", OpCode: 100);
+                                socket!.client!.write(sendToServer.toJson());
+
+                                print(sendToServer.toJson());
+
                                 // socket!.client!.write("[{\"ECGFile\": \"lol\"},{\"ECGFile\": \"lul\"}, {\"ECGFile\": \"lil\"}, {\"ECGFile\": \"lal\"}]");
-                                socket!.client!.write("[{\"ECGfile\": \"file1\"}, {\"ECGfile\": \"file2\"}, {\"ECGfile\": \"file3\"}, {\"ECGfile\": \"file4\"}, {\"ECGfile\": \"file5\"}, {\"ECGfile\": \"file6\"}, {\"ECGfile\": \"file7\"}, {\"ECGfile\": \"file8\"}]");
+                                // socket!.client!.write("[{\"ECGfile\": \"file1\"}, {\"ECGfile\": \"file2\"}, {\"ECGfile\": \"file3\"}, {\"ECGfile\": \"file4\"}, {\"ECGfile\": \"file5\"}, {\"ECGfile\": \"file6\"}, {\"ECGfile\": \"file7\"}, {\"ECGfile\": \"file8\"}]");
 
                                 // await socket!.client!.listen(dataHandler, 
                                 //     onError: errorHandler, 
                                 //     onDone: doneHandler, 
                                 //     cancelOnError: false);
-                                print("\n\n\n\nniceee\n\n\n\n\n");
-                                // print(socket!.client!.isEmpty);
 
-                                socket!.client!.asBroadcastStream().listen((List<int> bytes) {
+                                socket!.listener.listen((List<int> bytes) { // AQUI acho que não tem o await
 
                                   listOfFiles = jsonToList(new String.fromCharCodes(bytes).trim());
-                                  print(listOfFiles[0].ECGfile);
-                                  print(listOfFiles[1].ECGfile);
+                                  // print(listOfFiles[0].ECGfile);
+                                  // print(listOfFiles[1].ECGfile);
 
                                   }, 
                                   onError: (error, StackTrace trace) async {
@@ -218,49 +279,44 @@ class _EvaluationState extends State<Evaluation> {
                                   },
 
                                   cancelOnError: false
-                                  
-                                  
+
                                 );
 
-                                // listen((List<int> bytes) {
-
-                                //   listOfFiles = jsonToList(new String.fromCharCodes(bytes).trim());
-                                //   print(listOfFiles[0].ECGfile);
-                                //   print(listOfFiles[1].ECGfile);
-
-                                //   }, 
-                                //   onError: (error, StackTrace trace) async {
-                                //     print(error);
-                                //   },
-
-                                //   cancelOnError: false
-
-                                
                                 await askForFile(context);
-                                print(chosenFileName);
+                                // print(chosenFileName);
                                 // send to server in Json format
-                                if (chosenFileName != null) {
-                                  var fileChoice = CommunicationWithServer(IdMsg: null, OpCode: 100, ECGfile: chosenFileName);
+                                if (chosenFileName != null) { //AQUI é 400 ou 100?
+                                  var fileChoice = CommunicationWithServer(IdMsg: null, OpCode: 400, ECGfile: chosenFileName);
                                   socket!.client!.write(fileChoice.toJson());
+
+                                  print(fileChoice.toJson());
                                 // pop loading dialog box
                                 // listen for results 
                                 // OpCode 400
-                                /* 
-                                  _serverEval = listen 
-                                */
-                                // pop dialog box with ECGTime, FreqCard, GoodComplex, BadComplex.
+
+                                  // socket!.client!.write(CommunicationWithServer(OpCode: 100, ECGfile: chosenFileName, GoodComplex: 100, BadComplex: 0).toJson());
                                 
-                                // await showServerEvaluation(context);
+                                await socket!.listener.listen((List<int> bytes) {
+
+                                  _serverEval = CommunicationWithServer.fromJson(jsonDecode(new String.fromCharCodes(bytes).trim()));
+
+                                  }, 
+                                  onError: (error, StackTrace trace) async {
+                                    print(error);
+                                  },
+
+                                  cancelOnError: false
+
+                                );
+                                
+                                  await showServerEvaluation(context);
                                 }
 
                               }catch(_) {
 
-                                print("\n\n\n\nnot niceee\n\n\n\n\n");
-                                print(_);
-                                await showAlertWifiNotConnected(context);
-
+                                await showAlertWifiNotConnected(context); // Nao necessariamente o problema vai ser o wifi nao conectado, pode ser qlqlr coisa que saia do try
                               }
-                              
+
                             },
                           ),
                           margin: EdgeInsets.only(left:20, right:20, top: 10),

@@ -13,9 +13,11 @@ void main() {
 
 class Wrapper {
   Socket? client;
+  var listener;
   Wrapper();
   void setClient(Socket sock) {
     this.client = sock;
+    this.listener = sock.asBroadcastStream();
   }
 }
 

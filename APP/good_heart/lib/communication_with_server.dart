@@ -5,15 +5,15 @@ CommunicationWithServer communicationWithServerFromJson(String str) => Communica
 String communicationWithServerToJson(CommunicationWithServer data) => json.encode(data.toJson());
 
 class CommunicationWithServer {
-  CommunicationWithServer({
-    this.IdMsg,
-    this.OpCode,
-    this.ECGTime,
-    this.ECGfile,
-    this.FreqCard,
-    this.GoodComplex,
-    this.BadComplex,
-  });
+  // CommunicationWithServer({
+  //   this.IdMsg,
+  //   this.OpCode,
+  //   this.ECGTime,
+  //   this.ECGfile,
+  //   this.FreqCard,
+  //   this.GoodComplex,
+  //   this.BadComplex,
+  // });
 
   dynamic IdMsg;
   dynamic OpCode;
@@ -22,6 +22,20 @@ class CommunicationWithServer {
   dynamic FreqCard;
   dynamic GoodComplex;
   dynamic BadComplex;
+
+  CommunicationWithServer({this.IdMsg, this.OpCode, this.ECGTime, this.ECGfile, this.FreqCard, this.GoodComplex, this.BadComplex,});
+
+  String toJson() {
+    var data = <String, dynamic>{};
+    data["IdMsg"] = this.IdMsg;
+    data["OpCode"] = this.OpCode;
+    data["ECGTime"] = this.ECGTime;
+    data["ECGfile"] = this.ECGfile;
+    data["FreqCard"] = this.FreqCard;
+    data["GoodComplex"] = this.GoodComplex;
+    data["BadComplex"] = this.BadComplex;
+    return jsonEncode(data);
+  }
 
   factory CommunicationWithServer.fromJson(Map<String, dynamic> json) =>
       CommunicationWithServer(
@@ -35,15 +49,15 @@ class CommunicationWithServer {
       );
         
 
-  Map<String, dynamic> toJson() =>
-      {
-        "IdMsg": IdMsg,
-        "OpCode": OpCode,
-        "ECGTime": ECGTime,
-        "ECGfile": ECGfile,
-        "FreqCard": FreqCard,
-        "GoodComplex": GoodComplex,
-        "BadComplex": BadComplex,
-      };
+  // Map<String, dynamic> toJson() =>
+  //     {
+  //       "IdMsg": IdMsg,
+  //       "OpCode": OpCode,
+  //       "ECGTime": ECGTime,
+  //       "ECGfile": ECGfile,
+  //       "FreqCard": FreqCard,
+  //       "GoodComplex": GoodComplex,
+  //       "BadComplex": BadComplex,
+  //     };
 
 }
