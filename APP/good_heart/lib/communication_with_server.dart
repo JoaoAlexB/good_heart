@@ -9,19 +9,19 @@ class CommunicationWithServer {
   dynamic IdMsg;
   dynamic OpCode;
   dynamic ECGTime;
-  dynamic ECGfile;
+  dynamic ECGFile;
   dynamic FreqCard;
   dynamic GoodComplex;
   dynamic BadComplex;
 
-  CommunicationWithServer({this.IdMsg, this.OpCode, this.ECGTime, this.ECGfile, this.FreqCard, this.GoodComplex, this.BadComplex,});
+  CommunicationWithServer({this.IdMsg, this.OpCode, this.ECGTime, this.ECGFile, this.FreqCard, this.GoodComplex, this.BadComplex,});
 
   String toJson() {
     var data = <String, dynamic>{};
     data["IdMsg"] = this.IdMsg;
     data["OpCode"] = this.OpCode;
     data["ECGTime"] = this.ECGTime;
-    data["ECGfile"] = this.ECGfile;
+    data["ECGFile"] = this.ECGFile;
     data["FreqCard"] = this.FreqCard;
     data["GoodComplex"] = this.GoodComplex;
     data["BadComplex"] = this.BadComplex;
@@ -33,7 +33,7 @@ class CommunicationWithServer {
         IdMsg: json["IdMsg"],
         OpCode: json["OpCode"],
         ECGTime: json["ECGTime"],
-        ECGfile: json["ECGfile"],
+        ECGFile: json["ECGFile"],
         FreqCard: json["FreqCard"],
         GoodComplex: json["GoodComplex"],
         BadComplex: json["BadComplex"],

@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:good_heart/communication_with_server.dart';
 import 'package:good_heart/connection_page.dart';
-import 'colors.dart';
 import 'main.dart';
 
 class Evaluation extends StatefulWidget {
@@ -277,7 +275,7 @@ class _EvaluationState extends State<Evaluation> {
                                 // print(chosenFileName);
                                 // send to server in Json format
                                 if (chosenFileName != null) { //AQUI é 400 ou 100?
-                                  var fileChoice = CommunicationWithServer(IdMsg: null, OpCode: 400, ECGfile: chosenFileName);
+                                  var fileChoice = CommunicationWithServer(IdMsg: null, OpCode: 400, ECGFile: chosenFileName);
                                   socket!.client!.write(fileChoice.toJson());
 
                                   print(fileChoice.toJson());
