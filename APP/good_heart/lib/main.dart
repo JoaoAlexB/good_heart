@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (_) => DefaultHomePage(),
         '/connection_page': (_) => ConnectionPage(socket: socket),
-        '/evaluation_page': (_) => Evaluation(socket: socket),
+        '/evaluation_page': (_) => EvaluationPage(socket: socket),
         '/settings_page': (_) => SettingsPage(socket: socket),
       }
     );

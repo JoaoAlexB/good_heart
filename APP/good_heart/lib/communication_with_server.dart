@@ -13,8 +13,9 @@ class CommunicationWithServer {
   dynamic FreqCard;
   dynamic GoodComplex;
   dynamic BadComplex;
+  dynamic ECGFileName;
 
-  CommunicationWithServer({this.IdMsg, this.OpCode, this.ECGTime, this.ECGFile, this.FreqCard, this.GoodComplex, this.BadComplex,});
+  CommunicationWithServer({this.IdMsg, this.OpCode, this.ECGTime, this.ECGFile, this.FreqCard, this.GoodComplex, this.BadComplex, this.ECGFileName});
 
   String toJson() {
     var data = <String, dynamic>{};
@@ -25,6 +26,7 @@ class CommunicationWithServer {
     data["FreqCard"] = this.FreqCard;
     data["GoodComplex"] = this.GoodComplex;
     data["BadComplex"] = this.BadComplex;
+    data["ECGFileName"] = this.ECGFileName;
     return jsonEncode(data);
   }
 
@@ -37,5 +39,6 @@ class CommunicationWithServer {
         FreqCard: json["FreqCard"],
         GoodComplex: json["GoodComplex"],
         BadComplex: json["BadComplex"],
+        ECGFileName: json["ECGFileName"],
       );
 }

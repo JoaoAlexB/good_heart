@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_heart/main.dart';
 import 'dart:io';
+import 'globals.dart' as globals;
 
 class SettingsPage extends StatefulWidget {
 

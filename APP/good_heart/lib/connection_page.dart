@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:good_heart/colors.dart';
 import 'package:good_heart/main.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:good_heart/globals.dart' as globals;
 
 
 import 'communication_with_server.dart';
@@ -193,6 +195,8 @@ class _ConnectionPage extends State<ConnectionPage> {
                         socket!.setClient(await Socket.connect(
                             _textEditingControllerIP.text, 3333));
                         _pressedOkInConnect = 0;
+                        // Resets the idMsgValue
+                        globals.idMsgValue = 0;
                       }
                       } catch(_) {
                       if(_pressedOkInConnect != 0) {
@@ -217,6 +221,8 @@ class _ConnectionPage extends State<ConnectionPage> {
                   ),
                   onTap: () async {
                     try {
+                      var sendToServer = CommunicationWithServer(IdMsg: globals.idMsgValue, OpCode: 700);
+                      socket!.client!.write(sendToServer.toJson());
                       socket!.client!.close();
                       _textForAppearText.text = "Disconnected";
                       await showAlertPassedSocket(context);
@@ -243,11 +249,20 @@ class _ConnectionPage extends State<ConnectionPage> {
                   onTap: () async {
 
                     try {
-                      var sendToServer = CommunicationWithServer(IdMsg: "Testing connection", OpCode: 700);
+                      globals.idMsgValue += 1;
+                      var sendToServer = CommunicationWithServer(IdMsg: globals.idMsgValue, OpCode: 500);
                       socket!.client!.write(sendToServer.toJson());
                       
                       socket!.listener.listen((List<int> bytes) { // AQUI acho que não tem o await
-                        _textEditingControllerConnectionTest.text = (new String.fromCharCodes(bytes).trim());
+                        var receivedFromServer = CommunicationWithServer.fromJson(jsonDecode(new String.fromCharCodes(bytes).trim()));
+                        //var receivedFromServer = (new String.fromCharCodes(bytes).trim());
+
+                        if(receivedFromServer.OpCode == 510){
+                          _textEditingControllerConnectionTest.text = "Connected";
+                        }
+                        else{
+                          _textEditingControllerConnectionTest.text = "Not connected";
+                        }
                       }, 
                     
                       onError: (error, StackTrace trace) async {

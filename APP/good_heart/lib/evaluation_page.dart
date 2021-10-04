@@ -6,18 +6,20 @@ import 'package:flutter/painting.dart';
 import 'package:good_heart/communication_with_server.dart';
 import 'package:good_heart/connection_page.dart';
 import 'main.dart';
+import 'globals.dart' as globals;
 
-class Evaluation extends StatefulWidget {
+
+class EvaluationPage extends StatefulWidget {
 
   // Socket? client;
   Wrapper? socket;
-  Evaluation({Key? key, this.socket}) : super(key: key);
+  EvaluationPage({Key? key, this.socket}) : super(key: key);
 
   @override
   _EvaluationState createState() => _EvaluationState(socket: this.socket);
 }
 
-class _EvaluationState extends State<Evaluation> {
+class _EvaluationState extends State<EvaluationPage> {
 
   Wrapper? socket;
 
@@ -49,11 +51,11 @@ class _EvaluationState extends State<Evaluation> {
                         return Card(
                           child: ListTile(
                             leading: Icon(Icons.description_rounded),
-                            title: Text(listOfFiles[index].ECGfile.toString(),
+                            title: Text(listOfFiles[index].ECGFileName.toString(),
                                 style: TextStyle(height: 1.2, fontSize: 18)),
                             dense: true,
                             onTap: () {
-                              chosenFileName = listOfFiles[index].ECGfile.toString();
+                              chosenFileName = listOfFiles[index].ECGFileName.toString();
                               Navigator.of(context).pop();
                             },
                           ),
@@ -212,7 +214,7 @@ class _EvaluationState extends State<Evaluation> {
                               isThreeLine: true,
                               onTap: () async {
                                 await showAlertNotDeveloped(context);
-                                // var fileChoice = CommunicationWithServer(IdMsg: null, OpCode: 200, ECGfile: _textEditingController.text);
+                                // var fileChoice = CommunicationWithServer(IdMsg: null, OpCode: 200, ECGFile: _textEditingController.text);
                                 // client!.write(fileChoice.toJson());
                               },
                           ),
@@ -226,7 +228,7 @@ class _EvaluationState extends State<Evaluation> {
                               isThreeLine: true,
                               onTap: () async {
                                 await showAlertNotDeveloped(context);
-                                // var fileChoice = CommunicationWithServer(IdMsg: null, OpCode: 300, ECGfile: _textEditingController.text);
+                                // var fileChoice = CommunicationWithServer(IdMsg: null, OpCode: 300, ECGFile: _textEditingController.text);
                                 // client!.write(fileChoice.toJson());
                               },
                           ),
@@ -243,24 +245,15 @@ class _EvaluationState extends State<Evaluation> {
                             isThreeLine: true,
                             onTap: () async {
                               try {
-                                var sendToServer = CommunicationWithServer(IdMsg: "Get list of files", OpCode: 100);
+                                globals.idMsgValue += 1;
+                                var sendToServer = CommunicationWithServer(IdMsg: globals.idMsgValue, OpCode: 600);
                                 socket!.client!.write(sendToServer.toJson());
 
                                 print(sendToServer.toJson());
 
-                                // socket!.client!.write("[{\"ECGFile\": \"lol\"},{\"ECGFile\": \"lul\"}, {\"ECGFile\": \"lil\"}, {\"ECGFile\": \"lal\"}]");
-                                // socket!.client!.write("[{\"ECGfile\": \"file1\"}, {\"ECGfile\": \"file2\"}, {\"ECGfile\": \"file3\"}, {\"ECGfile\": \"file4\"}, {\"ECGfile\": \"file5\"}, {\"ECGfile\": \"file6\"}, {\"ECGfile\": \"file7\"}, {\"ECGfile\": \"file8\"}]");
-
-                                // await socket!.client!.listen(dataHandler, 
-                                //     onError: errorHandler, 
-                                //     onDone: doneHandler, 
-                                //     cancelOnError: false);
-
                                 socket!.listener.listen((List<int> bytes) { // AQUI acho que não tem o await
 
-                                  listOfFiles = jsonToList(new String.fromCharCodes(bytes).trim());
-                                  // print(listOfFiles[0].ECGfile);
-                                  // print(listOfFiles[1].ECGfile);
+                                  listOfFiles = jsonToList((new String.fromCharCodes(bytes).trim()));
 
                                   }, 
                                   onError: (error, StackTrace trace) async {
@@ -274,8 +267,9 @@ class _EvaluationState extends State<Evaluation> {
                                 await askForFile(context);
                                 // print(chosenFileName);
                                 // send to server in Json format
-                                if (chosenFileName != null) { //AQUI é 400 ou 100?
-                                  var fileChoice = CommunicationWithServer(IdMsg: null, OpCode: 400, ECGFile: chosenFileName);
+                                if (chosenFileName != null) {
+                                  globals.idMsgValue += 1;
+                                  var fileChoice = CommunicationWithServer(IdMsg: globals.idMsgValue, OpCode: 100, ECGFile: chosenFileName);
                                   socket!.client!.write(fileChoice.toJson());
 
                                   print(fileChoice.toJson());
@@ -283,7 +277,7 @@ class _EvaluationState extends State<Evaluation> {
                                 // listen for results 
                                 // OpCode 400
 
-                                  // socket!.client!.write(CommunicationWithServer(OpCode: 100, ECGfile: chosenFileName, GoodComplex: 100, BadComplex: 0).toJson());
+                                  // socket!.client!.write(CommunicationWithServer(OpCode: 100, ECGFile: chosenFileName, GoodComplex: 100, BadComplex: 0).toJson());
                                 
                                 await socket!.listener.listen((List<int> bytes) {
 
