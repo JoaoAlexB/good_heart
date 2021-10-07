@@ -23,7 +23,6 @@ class _EvaluationState extends State<EvaluationPage> {
 
   Wrapper? socket;
 
-  var listOfFiles = [];
   String? chosenFileName;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _textEditingController = TextEditingController();
@@ -46,16 +45,16 @@ class _EvaluationState extends State<EvaluationPage> {
                     width: 300.0,
                     padding: EdgeInsets.only(top: 10),
                     child: ListView.builder(
-                      itemCount: listOfFiles.length,
+                      itemCount: globals.listOfFiles.length,
                       itemBuilder: (context, index) {
                         return Card(
                           child: ListTile(
                             leading: Icon(Icons.description_rounded),
-                            title: Text(listOfFiles[index].ECGFileName.toString(),
+                            title: Text(globals.listOfFiles[index].ECGFileName.toString(),
                                 style: TextStyle(height: 1.2, fontSize: 18)),
                             dense: true,
                             onTap: () {
-                              chosenFileName = listOfFiles[index].ECGFileName.toString();
+                              chosenFileName = globals.listOfFiles[index].ECGFileName.toString();
                               Navigator.of(context).pop();
                             },
                           ),
@@ -181,13 +180,6 @@ class _EvaluationState extends State<EvaluationPage> {
     });
   }
 
-  jsonToList(String response) {
-
-    listOfFiles = (json.decode(response) as List).map((i) => CommunicationWithServer.fromJson(i)).toList();
-
-  }
-
-
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -253,7 +245,7 @@ class _EvaluationState extends State<EvaluationPage> {
 
                                 socket!.listener.listen((List<int> bytes) { // AQUI acho que não tem o await
 
-                                  listOfFiles = jsonToList((new String.fromCharCodes(bytes).trim()));
+                                  globals.listOfFiles = globals.jsonToList((new String.fromCharCodes(bytes).trim()));
 
                                   }, 
                                   onError: (error, StackTrace trace) async {
