@@ -13,6 +13,7 @@ typedef struct elemento{
     int FreqCard;
     int GoodComplex;
     int BadComplex;
+    int HeartRate;
 }MessageBodyImpl;
 
 MessageBody createMessageBody(){
@@ -24,6 +25,7 @@ MessageBody createMessageBody(){
     m->FreqCard = -1;
     m->GoodComplex = -1;
     m->BadComplex = -1;
+    m->HeartRate = -1;
     return m;
 }
 
@@ -35,6 +37,11 @@ void setIdMsg(MessageBody messageBody, int IdMsg){
 void setOpCode(MessageBody messageBody, int opCode){
     MessageBodyImpl* m = messageBody;
     m->OpCode = opCode;
+}
+
+void setHeartRate(MessageBody messageBody, int heartRate){
+    MessageBodyImpl* m = messageBody;
+    m->HeartRate = heartRate;
 }
 
 int getOpCode(MessageBody messageBody){
@@ -57,6 +64,10 @@ int getECGFile(MessageBody messageBody){
     return m->ECGFile;
 }
 
+int getIdMsg(MessageBody messageBody){
+    MessageBodyImpl* m = messageBody;
+    return m->IdMsg;
+}
 
 void setFreqCard(MessageBody messageBody, int FreqCard){
     MessageBodyImpl* m = messageBody;
@@ -93,8 +104,8 @@ char * MessageBodyToJson(MessageBody messageBody){
         cJSON* ECGFile = cJSON_CreateNumber((double)m->ECGFile);
         cJSON_AddItemToObject(json, "ECGFile", ECGFile);
     }
-    if(m->FreqCard != -1){
-        cJSON* FreqCard = cJSON_CreateNumber((double)m->FreqCard);
+    if(m->HeartRate != -1){
+        cJSON* FreqCard = cJSON_CreateNumber((double)m->HeartRate);
         cJSON_AddItemToObject(json, "FreqCard", FreqCard);
     }
     if(m->GoodComplex != -1){
@@ -131,8 +142,8 @@ MessageBody JsonToMessageBody(char* string){
     }
 
     obj = cJSON_GetObjectItemCaseSensitive(json, "ECGFile");
-    if (cJSON_IsNumber(obj)){
-        setECGFile(messageBody, obj->valueint);
+    if (cJSON_IsNumber(obj) || cJSON_IsString(obj)){
+        setECGFile(messageBody, atoi(obj->valuestring));
     }
 
     obj = cJSON_GetObjectItemCaseSensitive(json, "FreqCard");
