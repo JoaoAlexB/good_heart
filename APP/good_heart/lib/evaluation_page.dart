@@ -23,6 +23,7 @@ class _EvaluationState extends State<EvaluationPage> {
 
   Wrapper? socket;
 
+  var listOfFiles = [];
   String? chosenFileName;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _textEditingController = TextEditingController();
@@ -45,16 +46,16 @@ class _EvaluationState extends State<EvaluationPage> {
                     width: 300.0,
                     padding: EdgeInsets.only(top: 10),
                     child: ListView.builder(
-                      itemCount: globals.listOfFiles.length,
+                      itemCount: listOfFiles.length,
                       itemBuilder: (context, index) {
                         return Card(
                           child: ListTile(
                             leading: Icon(Icons.description_rounded),
-                            title: Text(globals.listOfFiles[index].ECGFileName.toString(),
+                            title: Text(listOfFiles[index].ECGFileName.toString(),
                                 style: TextStyle(height: 1.2, fontSize: 18)),
                             dense: true,
                             onTap: () {
-                              chosenFileName = globals.listOfFiles[index].ECGFileName.toString();
+                              chosenFileName = listOfFiles[index].ECGFileName.toString();
                               Navigator.of(context).pop();
                             },
                           ),
@@ -106,16 +107,16 @@ class _EvaluationState extends State<EvaluationPage> {
             content: Text("Evaluation ready!", textAlign: TextAlign.center,
                 style: TextStyle(height: 2.5, fontSize: 20)),
               actions: <Widget> [
-                Card(
-                  child: ListTile(
-                    leading: Icon(Icons.timer),
-                    title: Text("ECG time: " + _serverEval.ECGTime.toString(),
-                    style: TextStyle(height: 0, fontSize: 18),),
-                    dense: true,
-                  ),
-                  margin: EdgeInsets.only(left:20, right:20, top: 0),
-                  elevation: 0.0,
-                ),
+                // Card(
+                //   child: ListTile(
+                //     leading: Icon(Icons.timer),
+                //     title: Text("ECG time: " + _serverEval.ECGTime.toString(),
+                //     style: TextStyle(height: 0, fontSize: 18),),
+                //     dense: true,
+                //   ),
+                //   margin: EdgeInsets.only(left:20, right:20, top: 0),
+                //   elevation: 0.0,
+                // ),
                 Card(
                   child: ListTile(
                     leading: Icon(Icons.medical_services_rounded),
@@ -180,6 +181,13 @@ class _EvaluationState extends State<EvaluationPage> {
     });
   }
 
+  jsonToList(String response) {
+
+    listOfFiles = (json.decode(response) as List).map((i) => CommunicationWithServer.fromJson(i)).toList();
+    print(listOfFiles);
+  }
+
+
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -212,20 +220,20 @@ class _EvaluationState extends State<EvaluationPage> {
                           ),
                           margin: EdgeInsets.only(left:20, right:20, top: 10),
                         ),
-                        Card(
-                            child: ListTile(
-                              leading: Icon(Icons.pageview, size: 40,),
-                              title: Text('Patient captured ECG', style: TextStyle(height: 1.4, fontSize: 20),),
-                              subtitle: Text('Evaluates an ECG already captured from the patient.', style: TextStyle(height: 1.3),),
-                              isThreeLine: true,
-                              onTap: () async {
-                                await showAlertNotDeveloped(context);
-                                // var fileChoice = CommunicationWithServer(IdMsg: null, OpCode: 300, ECGFile: _textEditingController.text);
-                                // client!.write(fileChoice.toJson());
-                              },
-                          ),
-                          margin: EdgeInsets.only(left:20, right:20, top: 10),
-                        ),
+                        // Card(
+                        //     child: ListTile(
+                        //       leading: Icon(Icons.pageview, size: 40,),
+                        //       title: Text('Patient captured ECG', style: TextStyle(height: 1.4, fontSize: 20),),
+                        //       subtitle: Text('Evaluates an ECG already captured from the patient.', style: TextStyle(height: 1.3),),
+                        //       isThreeLine: true,
+                        //       onTap: () async {
+                        //         await showAlertNotDeveloped(context);
+                        //         // var fileChoice = CommunicationWithServer(IdMsg: null, OpCode: 300, ECGFile: _textEditingController.text);
+                        //         // client!.write(fileChoice.toJson());
+                        //       },
+                        //   ),
+                        //   margin: EdgeInsets.only(left:20, right:20, top: 10),
+                        // ),
                         Card(
                           child: ListTile(
                             leading: FittedBox(
@@ -244,8 +252,9 @@ class _EvaluationState extends State<EvaluationPage> {
                                 print(sendToServer.toJson());
 
                                 socket!.listener.listen((List<int> bytes) { // AQUI acho que não tem o await
-
-                                  globals.listOfFiles = globals.jsonToList((new String.fromCharCodes(bytes).trim()));
+                                  setState(() {
+                                    listOfFiles = jsonToList((new String.fromCharCodes(bytes).trim()));
+                                  });
 
                                   }, 
                                   onError: (error, StackTrace trace) async {
@@ -273,7 +282,9 @@ class _EvaluationState extends State<EvaluationPage> {
                                 
                                 await socket!.listener.listen((List<int> bytes) {
 
-                                  _serverEval = CommunicationWithServer.fromJson(jsonDecode(new String.fromCharCodes(bytes).trim()));
+                                  setState(() {
+                                    _serverEval = CommunicationWithServer.fromJson(jsonDecode(new String.fromCharCodes(bytes).trim()));
+                                  });
 
                                   }, 
                                   onError: (error, StackTrace trace) async {
@@ -283,7 +294,7 @@ class _EvaluationState extends State<EvaluationPage> {
                                   cancelOnError: false
 
                                 );
-                                
+                                  
                                   await showServerEvaluation(context);
                                 }
 

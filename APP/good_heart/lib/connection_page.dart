@@ -1,17 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:good_heart/colors.dart';
 import 'package:good_heart/main.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:good_heart/globals.dart' as globals;
+
+
 import 'communication_with_server.dart';
-
-
-dynamic navigatorKey = GlobalKey<NavigatorState>();
-
 
 class ConnectionPage extends StatefulWidget {
 
@@ -26,6 +23,7 @@ class _ConnectionPage extends State<ConnectionPage> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _textEditingControllerIP = TextEditingController();
+  final TextEditingController _textEditingControllerConnectionTest = TextEditingController();
   final TextEditingController _textForAppearText = TextEditingController();
 
   Wrapper? socket;
@@ -106,11 +104,12 @@ class _ConnectionPage extends State<ConnectionPage> {
     });
   }
 
-  Future<void> showAlertServerAnswer() async {
-    return await showDialog(context: navigatorKey.currentState.overlay.context,
-        builder: (_){
+  Future<void> showAlertServerAnswer(BuildContext context) async {
+    return await showDialog(context: context,
+        builder: (context){
           return AlertDialog(
-            content: _checkingConnectionText(globals.textEditingControllerConnectionTest),
+            content: _checkingConnectionText(_textEditingControllerConnectionTest),
+
             actions: <Widget> [
               TextButton(
                   onPressed: (){
@@ -157,16 +156,6 @@ class _ConnectionPage extends State<ConnectionPage> {
         });
   }
 
-  Future<void> setGlobalConnectingVariables(List<int> bytes) async{
-    var receivedFromServer = CommunicationWithServer.fromJson(jsonDecode(new String.fromCharCodes(bytes).trim()));
-    if(receivedFromServer.OpCode == 510){
-      globals.textEditingControllerConnectionTest.text = "Connected";
-    }
-    else{
-      globals.textEditingControllerConnectionTest.text = "Not connected";
-    }
-  }
-
   // Connection Page Structure
   @override
   Widget build(BuildContext context) {
@@ -192,8 +181,8 @@ class _ConnectionPage extends State<ConnectionPage> {
               ),
               Card(
                 child: ListTile(
-                  leading: Icon(Icons.wifi,  size: 40,),
-                  title: Text("Connect to Wi-Fi", style: TextStyle(height: 1, fontSize: 20),),
+                  leading: Icon(Icons.mobile_friendly_rounded,  size: 40,),
+                  title: Text("Connect to Device", style: TextStyle(height: 1, fontSize: 20),),
                   //subtitle: Text('Here is a second line'),
                   tileColor: MyColors.green[800], //AQUI
                   shape: RoundedRectangleBorder(
@@ -223,8 +212,8 @@ class _ConnectionPage extends State<ConnectionPage> {
               ),
               Card(
                 child: ListTile(
-                  leading: Icon(Icons.wifi_off,  size: 40,),
-                  title: Text("Disconnect from Wi-Fi", style: TextStyle(height: 1, fontSize: 20),),
+                  leading: Icon(Icons.mobile_off_rounded,  size: 40,),
+                  title: Text("Disconnect from Device", style: TextStyle(height: 1, fontSize: 20),),
                   //subtitle: Text('Here is a second line'),
                   tileColor: MyColors.green[800], //AQUI
                   shape: RoundedRectangleBorder(
@@ -260,39 +249,23 @@ class _ConnectionPage extends State<ConnectionPage> {
                   onTap: () async {
 
                     try {
-                      globals.textEditingControllerConnectionTest.clear();
                       globals.idMsgValue += 1;
                       var sendToServer = CommunicationWithServer(IdMsg: globals.idMsgValue, OpCode: 500);
                       socket!.client!.write(sendToServer.toJson());
-                      socket!.listener.asBroadcastStream().drain();
+                      
+                      socket!.listener.listen((List<int> bytes) { // AQUI acho que não tem o await
+                        var receivedFromServer = CommunicationWithServer.fromJson(jsonDecode(new String.fromCharCodes(bytes).trim()));
+                        //var receivedFromServer = (new String.fromCharCodes(bytes).trim());
+                        setState(() {
+                          if(receivedFromServer.OpCode == 510){
+                          _textEditingControllerConnectionTest.text = "Connected";
 
-                      // await socket!.listener.listen(onListen: (subscription){
-                      //   subscription.onData((List<int> bytes){
-                      //     //List<int> bytes = data;
-                      //     var receivedFromServer = CommunicationWithServer.fromJson(jsonDecode(new String.fromCharCodes(bytes).trim()));
-
-                      //     if(receivedFromServer.OpCode == 510){
-                      //       globals.textEditingControllerConnectionTest.text = "Connected";
-                      //     }
-                      //     else{
-                      //       globals.textEditingControllerConnectionTest.text = "Not connected";
-                      //     }
-                      //     print("ntrei aqui");
-                      //     //setGlobalConnectingVariables(context, bytes).then((value) => showAlertServerAnswer(context));
-                      //   });
-                      // },
-                      await socket!.listener.listen((List<int> bytes) async { // AQUI acho que não tem o await
-                        await setGlobalConnectingVariables(bytes).then((value) => showAlertServerAnswer());
-                        // var receivedFromServer;
-                        // receivedFromServer = CommunicationWithServer.fromJson(jsonDecode(new String.fromCharCodes(bytes).trim()));
-
-                        // if(receivedFromServer.OpCode == 510){
-                        //   globals.textEditingControllerConnectionTest.text = "Connected";
-                        // }
-                        // else{
-                        //   globals.textEditingControllerConnectionTest.text = "Not connected";
-                        // }
-                        // print(globals.textEditingControllerConnectionTest.text);
+                        }
+                        else{
+                          _textEditingControllerConnectionTest.text = "Not connected";
+                        }
+                        });
+                        
                       }, 
                     
                       onError: (error, StackTrace trace) async {
@@ -301,10 +274,11 @@ class _ConnectionPage extends State<ConnectionPage> {
 
                       cancelOnError: false
                       );
+                      await showAlertServerAnswer(context);
 
                     }catch(_) {
-                      globals.textEditingControllerConnectionTest.text = "Not connected";
-                      showAlertServerAnswer();
+                      _textEditingControllerConnectionTest.text = "Not connected";
+                      await showAlertServerAnswer(context);
                       print(_);
                     }
 

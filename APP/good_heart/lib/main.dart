@@ -1,5 +1,3 @@
-import 'dart:core';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'colors.dart';
@@ -21,12 +19,6 @@ class Wrapper {
     this.client = sock;
     this.listener = sock.asBroadcastStream();
   }
-  void checkDistinct(Socket sock){
-    this.client!.distinct();
-  }
-  void flushClient(Socket sock){
-    this.client!.flush();
-  }
 }
 
 class MyApp extends StatelessWidget {
@@ -37,7 +29,6 @@ class MyApp extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return MaterialApp(
-      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: MyColors.green,
