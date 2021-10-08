@@ -51,11 +51,15 @@ class _EvaluationState extends State<EvaluationPage> {
                         return Card(
                           child: ListTile(
                             leading: Icon(Icons.description_rounded),
-                            title: Text(listOfFiles[index].ECGFileName.toString(),
+                            title: Text(this.listOfFiles[index].ECGFileName.toString(),
                                 style: TextStyle(height: 1.2, fontSize: 18)),
                             dense: true,
                             onTap: () {
-                              chosenFileName = listOfFiles[index].ECGFileName.toString();
+
+                              setState(() {
+                                chosenFileName = this.listOfFiles[index].ECGFileName.toString();
+                              });
+
                               Navigator.of(context).pop();
                             },
                           ),
@@ -181,10 +185,14 @@ class _EvaluationState extends State<EvaluationPage> {
     });
   }
 
-  jsonToList(String response) {
+  jsonToList(var bytes) {
 
-    listOfFiles = (json.decode(response) as List).map((i) => CommunicationWithServer.fromJson(i)).toList();
-    print(listOfFiles);
+    var tempString = (new String.fromCharCodes(bytes).trim());
+
+    setState(() {
+      this.listOfFiles = (json.decode(tempString) as List).map((i) => CommunicationWithServer.fromJson(i)).toList();
+    });
+
   }
 
 
@@ -242,19 +250,29 @@ class _EvaluationState extends State<EvaluationPage> {
                             ),
                             title: Text('Find an ECG file', style: TextStyle(height: 1.4, fontSize: 20),),
                             subtitle: Text('Find a previously generated file with ECG info.', style: TextStyle(height: 1.3),),
-                            isThreeLine: true,
+                            // isThreeLine: true,
                             onTap: () async {
                               try {
                                 globals.idMsgValue += 1;
                                 var sendToServer = CommunicationWithServer(IdMsg: globals.idMsgValue, OpCode: 600);
+                                socket!.listener.drain();
                                 socket!.client!.write(sendToServer.toJson());
-
+                                socket!.listener.drain();
+                                
                                 print(sendToServer.toJson());
 
-                                socket!.listener.listen((List<int> bytes) { // AQUI acho que não tem o await
-                                  setState(() {
-                                    listOfFiles = jsonToList((new String.fromCharCodes(bytes).trim()));
-                                  });
+                                await socket!.listener.listen(
+                                  (List<int> bytes) async { // AQUI acho que não tem o await
+                                  // print(new String.fromCharCodes(bytes).trim());
+                                  // String string = (new String.fromCharCodes(bytes).trim());
+                                  // print(string);
+                                  // print(socket!.listOfFiles);
+                                  // jsonToList(string);
+                                  // string = (new String.fromCharCodes(bytes).trim());
+                                  jsonToList(bytes);
+                                  // for (CommunicationWithServer i in socket!.listOfFiles) {
+                                  //   print(i.ECGFileName);
+                                  // }
 
                                   }, 
                                   onError: (error, StackTrace trace) async {
@@ -265,14 +283,21 @@ class _EvaluationState extends State<EvaluationPage> {
 
                                 );
 
+                                socket!.listener.drain();
+
                                 await askForFile(context);
                                 // print(chosenFileName);
                                 // send to server in Json format
                                 if (chosenFileName != null) {
                                   globals.idMsgValue += 1;
-                                  var fileChoice = CommunicationWithServer(IdMsg: globals.idMsgValue, OpCode: 100, ECGFile: chosenFileName);
-                                  socket!.client!.write(fileChoice.toJson());
+                                  var fileChoice;
 
+                                  setState(() {
+                                    fileChoice = CommunicationWithServer(IdMsg: globals.idMsgValue, OpCode: 100, ECGFile: chosenFileName);
+                                  });
+
+                                  socket!.client!.write(fileChoice.toJson());
+                                  socket!.listener.drain();
                                   print(fileChoice.toJson());
                                 // pop loading dialog box
                                 // listen for results 
@@ -280,12 +305,17 @@ class _EvaluationState extends State<EvaluationPage> {
 
                                   // socket!.client!.write(CommunicationWithServer(OpCode: 100, ECGFile: chosenFileName, GoodComplex: 100, BadComplex: 0).toJson());
                                 
-                                await socket!.listener.listen((List<int> bytes) {
-
-                                  setState(() {
-                                    _serverEval = CommunicationWithServer.fromJson(jsonDecode(new String.fromCharCodes(bytes).trim()));
-                                  });
-
+                                await socket!.listener.listen(
+                                  (List<int> bytes) async {
+                                    // print(new String.fromCharCodes(bytes).trim());
+                                    // _serverEval = CommunicationWithServer.fromJson(jsonDecode(new String.fromCharCodes(bytes).trim()));
+                                    // print(_serverEval.ECGFileName);
+                                    // print(_serverEval.GoodComplex);
+                                    // print(_serverEval.BadComplex);
+                                    // print(_serverEval.FreqCard);
+                                    setState(() {
+                                      _serverEval = CommunicationWithServer.fromJson(jsonDecode(new String.fromCharCodes(bytes).trim()));
+                                    });
                                   }, 
                                   onError: (error, StackTrace trace) async {
                                     print(error);
@@ -294,6 +324,7 @@ class _EvaluationState extends State<EvaluationPage> {
                                   cancelOnError: false
 
                                 );
+                                  socket!.listener.drain();
                                   
                                   await showServerEvaluation(context);
                                 }

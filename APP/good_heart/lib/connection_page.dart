@@ -122,6 +122,24 @@ class _ConnectionPage extends State<ConnectionPage> {
     });
   }
 
+  Future<void> showAlreadyConnected(BuildContext context) async {
+    return await showDialog(context: context,
+        builder: (context){
+          return AlertDialog(
+            content: Text("Already Connected to a device.\nTry disconnecting first."),
+
+            actions: <Widget> [
+              TextButton(
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Ok"),
+              )
+            ]
+          );
+    });
+  }
+
   Future<void> showAlertErrorSocket(BuildContext context) async {
     return await showDialog(context: context,
         builder: (context){
@@ -164,7 +182,7 @@ class _ConnectionPage extends State<ConnectionPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Wi-Fi connection'),
+        title: const Text('Device connection'),
       ),
       body: SafeArea(
         child: ListView(
@@ -181,7 +199,7 @@ class _ConnectionPage extends State<ConnectionPage> {
               ),
               Card(
                 child: ListTile(
-                  leading: Icon(Icons.mobile_friendly_rounded,  size: 40,),
+                  leading: Icon(Icons.wifi,  size: 40,),
                   title: Text("Connect to Device", style: TextStyle(height: 1, fontSize: 20),),
                   //subtitle: Text('Here is a second line'),
                   tileColor: MyColors.green[800], //AQUI
@@ -192,11 +210,16 @@ class _ConnectionPage extends State<ConnectionPage> {
                     await showIPDialog(context);
                     try {
                       if(_pressedOkInConnect != 0) {
-                        socket!.setClient(await Socket.connect(
-                            _textEditingControllerIP.text, 3333));
-                        _pressedOkInConnect = 0;
-                        // Resets the idMsgValue
-                        globals.idMsgValue = 0;
+                        if (socket!.connected == 0) {
+                          socket!.setClient(await Socket.connect(
+                              _textEditingControllerIP.text, 3333));
+                          _pressedOkInConnect = 0;
+                          // Resets the idMsgValue
+                          globals.idMsgValue = 0;
+                          socket!.connected = 1;
+                        }else {
+                          await showAlreadyConnected(context);
+                        }
                       }
                       } catch(_) {
                       if(_pressedOkInConnect != 0) {
@@ -212,7 +235,7 @@ class _ConnectionPage extends State<ConnectionPage> {
               ),
               Card(
                 child: ListTile(
-                  leading: Icon(Icons.mobile_off_rounded,  size: 40,),
+                  leading: Icon(Icons.wifi_off,  size: 40,),
                   title: Text("Disconnect from Device", style: TextStyle(height: 1, fontSize: 20),),
                   //subtitle: Text('Here is a second line'),
                   tileColor: MyColors.green[800], //AQUI
@@ -223,7 +246,9 @@ class _ConnectionPage extends State<ConnectionPage> {
                     try {
                       var sendToServer = CommunicationWithServer(IdMsg: globals.idMsgValue, OpCode: 700);
                       socket!.client!.write(sendToServer.toJson());
+                      socket!.listener.drain();
                       socket!.client!.close();
+                      socket!.connected = 0;
                       _textForAppearText.text = "Disconnected";
                       await showAlertPassedSocket(context);
 
@@ -251,21 +276,36 @@ class _ConnectionPage extends State<ConnectionPage> {
                     try {
                       globals.idMsgValue += 1;
                       var sendToServer = CommunicationWithServer(IdMsg: globals.idMsgValue, OpCode: 500);
+                      socket!.listener.drain();
                       socket!.client!.write(sendToServer.toJson());
-                      
-                      socket!.listener.listen((List<int> bytes) { // AQUI acho que não tem o await
-                        var receivedFromServer = CommunicationWithServer.fromJson(jsonDecode(new String.fromCharCodes(bytes).trim()));
-                        //var receivedFromServer = (new String.fromCharCodes(bytes).trim());
-                        setState(() {
-                          if(receivedFromServer.OpCode == 510){
-                          _textEditingControllerConnectionTest.text = "Connected";
+                      socket!.listener.drain();
 
+                      await socket!.listener.listen(
+                        (List<int> bytes) async { // AQUI acho que não tem o await
+                        print(new String.fromCharCodes(bytes).trim());
+                        var receivedFromServer;
+                        setState(() {
+                          receivedFromServer = CommunicationWithServer.fromJson(jsonDecode(new String.fromCharCodes(bytes).trim()));  
+                        });
+                        // receivedFromServer = CommunicationWithServer.fromJson(jsonDecode(new String.fromCharCodes(bytes).trim()));
+                        //var receivedFromServer = (new String.fromCharCodes(bytes).trim());
+                        
+                        print(receivedFromServer.OpCode);
+
+                        if(receivedFromServer.OpCode == 510){
+                          setState(() {
+                            _textEditingControllerConnectionTest.text = "Connected";
+                          });
+                          // _textEditingControllerConnectionTest.text = "Connected";
+                          print("Connected");
                         }
                         else{
-                          _textEditingControllerConnectionTest.text = "Not connected";
+                          setState(() {
+                            _textEditingControllerConnectionTest.text = "Not connected";
+                          });
+                          // _textEditingControllerConnectionTest.text = "Not connected";
+                          print("Not connected");
                         }
-                        });
-                        
                       }, 
                     
                       onError: (error, StackTrace trace) async {
@@ -274,11 +314,28 @@ class _ConnectionPage extends State<ConnectionPage> {
 
                       cancelOnError: false
                       );
+
+                      socket!.listener.drain();
+
+                      // await for (List<int> bytes in socket!.listener) {
+                      //   var receivedFromServer = CommunicationWithServer.fromJson(jsonDecode((new String.fromCharCodes(bytes).trim())));
+
+                      //   if(receivedFromServer.OpCode == 510){
+                      //     _textEditingControllerConnectionTest.text = "Connected";
+                      //   }
+                      //   else{
+                      //     _textEditingControllerConnectionTest.text = "Not connected";
+                      //   }
+                      // }
+
                       await showAlertServerAnswer(context);
 
                     }catch(_) {
-                      _textEditingControllerConnectionTest.text = "Not connected";
+                      setState(() {
+                        _textEditingControllerConnectionTest.text = "Not connected";
+                      });
                       await showAlertServerAnswer(context);
+                      print("DEU MERDA AQUI CARLAO");
                       print(_);
                     }
 

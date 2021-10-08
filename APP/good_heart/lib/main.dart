@@ -14,6 +14,8 @@ void main() {
 class Wrapper {
   Socket? client;
   var listener;
+  // var listOfFiles = [];
+  int connected = 0;
   Wrapper();
   void setClient(Socket sock) {
     this.client = sock;
