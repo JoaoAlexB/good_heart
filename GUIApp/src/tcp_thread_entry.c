@@ -172,8 +172,9 @@ void tcp_thread_entry(void)
                 free(response);
                 break;
             case GET_FILES:
+                idMsg = getIdMsg(message);
                 free(message);
-                response = getECGFiles();
+                response = getECGFiles(idMsg);
                 nx_packet_allocate(&g_packet_pool0, &packet_ptr, NX_TCP_PACKET, NX_WAIT_FOREVER);
                 nx_packet_data_append(packet_ptr, response, strlen(response), &g_packet_pool0, NX_WAIT_FOREVER);
                 nx_tcp_socket_send(&socket_echo, packet_ptr, NX_WAIT_FOREVER);

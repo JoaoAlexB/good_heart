@@ -43,6 +43,6 @@ char * MessageBodyToJson(MessageBody messageBody);
 
 MessageBody JsonToMessageBody(char* string);
 
-char * getECGFiles();
+char * getECGFiles(int idMsg);
 
 #endif
