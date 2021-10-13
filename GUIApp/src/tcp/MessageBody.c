@@ -165,27 +165,39 @@ MessageBody JsonToMessageBody(char* string){
     return messageBody;
 }
 
-char * getECGFiles(){
+char * getECGFiles(int idMsg){
     char *string = NULL;
     char str[3];
+    cJSON* json = cJSON_CreateObject();
+
+    cJSON* IdMsg = cJSON_CreateNumber((double)idMsg);
+    cJSON_AddItemToObject(json, "IdMsg", IdMsg);
+
+    cJSON* OpCode = cJSON_CreateNumber((double)610);
+    cJSON_AddItemToObject(json, "OpCode", OpCode);
+
     cJSON* files = cJSON_CreateArray();
-    cJSON* item = NULL;
+    //cJSON* item = NULL;
     cJSON* file = NULL;
     for(int i=0;i<11;i++){
-        item = cJSON_CreateObject();
+        //item = cJSON_CreateObject();
 
         sprintf(str, "%d", ECGFiles[i]);
 
         file = cJSON_CreateString(str);
 
-        cJSON_AddItemToObject(item, "ECGFileName", file);
+        cJSON_AddItemToArray(files, file);
 
-        cJSON_AddItemReferenceToArray(files, item);
+        //cJSON_AddItemToObject(item, "ECGFileName", file);
+
+        //cJSON_AddItemReferenceToArray(files, item);
 
     }
 
-    string = cJSON_Print(files);
-    cJSON_Delete(files);
+    cJSON_AddItemToObject(json, "Files", files);
+
+    string = cJSON_Print(json);
+    cJSON_Delete(json);
     return string;
 }
 
