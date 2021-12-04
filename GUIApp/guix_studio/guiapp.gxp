@@ -1273,60 +1273,6 @@
 <enabled>TRUE</enabled>
 <compress>FALSE</compress>
 </resource>
-<resource>
-<name>Add New String</name>
-<pathinfo>
-<pathtype>project_relative</pathtype>
-</pathinfo>
-<is_default>FALSE</is_default>
-<enabled>TRUE</enabled>
-<compress>FALSE</compress>
-</resource>
-<resource>
-<name>Add New String</name>
-<pathinfo>
-<pathtype>project_relative</pathtype>
-</pathinfo>
-<is_default>FALSE</is_default>
-<enabled>TRUE</enabled>
-<compress>FALSE</compress>
-</resource>
-<resource>
-<name>Add New String</name>
-<pathinfo>
-<pathtype>project_relative</pathtype>
-</pathinfo>
-<is_default>FALSE</is_default>
-<enabled>TRUE</enabled>
-<compress>FALSE</compress>
-</resource>
-<resource>
-<name>Add New String</name>
-<pathinfo>
-<pathtype>project_relative</pathtype>
-</pathinfo>
-<is_default>FALSE</is_default>
-<enabled>TRUE</enabled>
-<compress>FALSE</compress>
-</resource>
-<resource>
-<name>Add New String</name>
-<pathinfo>
-<pathtype>project_relative</pathtype>
-</pathinfo>
-<is_default>FALSE</is_default>
-<enabled>TRUE</enabled>
-<compress>FALSE</compress>
-</resource>
-<resource>
-<name>Add New String</name>
-<pathinfo>
-<pathtype>project_relative</pathtype>
-</pathinfo>
-<is_default>FALSE</is_default>
-<enabled>TRUE</enabled>
-<compress>FALSE</compress>
-</resource>
 </resource>
 <vscroll_appearance>
 <scroll_width>20</scroll_width>
@@ -1355,7 +1301,7 @@
 <English>TRUE</English>
 <string_table>
 <sort_column>-1</sort_column>
-<num_strings>23</num_strings>
+<num_strings>24</num_strings>
 <num_languages>1</num_languages>
 <string_record>
 <id>HELLO_WORLD</id>
@@ -1467,6 +1413,11 @@
 <font>0</font>
 <val>IP:</val>
 </string_record>
+<string_record>
+<id>STRING_15</id>
+<font>0</font>
+<val>Waiting connection...</val>
+</string_record>
 </string_table>
 <widget_folder>
 <folder_name>default_folder</folder_name>
@@ -1507,7 +1458,7 @@
 <id_name>P_WAIT</id_name>
 <template>FALSE</template>
 <visible_at_startup>FALSE</visible_at_startup>
-<string_id>STRING_13</string_id>
+<string_id>STRING_15</string_id>
 <font_id>PROMPT</font_id>
 <normal_text_color>TEXT</normal_text_color>
 <selected_text_color>TEXT</selected_text_color>

@@ -6,7 +6,7 @@
 /*  GUIX Studio User Guide, or visit our web site at azure.com/rtos            */
 /*                                                                             */
 /*  GUIX Studio Revision 6.1.8.1                                               */
-/*  Date (dd.mm.yyyy): 30. 9.2021   Time (hh:mm): 09:11                        */
+/*  Date (dd.mm.yyyy): 14.10.2021   Time (hh:mm): 06:46                        */
 /*******************************************************************************/
 
 
@@ -83,7 +83,7 @@ GX_WINDOW_PROPERTIES window1_properties =
 };
 GX_PROMPT_PROPERTIES window1_prompt_properties =
 {
-    GX_STRING_ID_STRING_13,                  /* string id                      */
+    GX_STRING_ID_STRING_15,                  /* string id                      */
     GX_FONT_ID_PROMPT,                       /* font id                        */
     GX_COLOR_ID_TEXT,                        /* normal text color              */
     GX_COLOR_ID_TEXT,                        /* selected text color            */

@@ -6,7 +6,7 @@
 /*  Studio User Guide, or visit our web site at azure.com/rtos                 */
 /*                                                                             */
 /*  GUIX Studio Revision 6.1.8.1                                               */
-/*  Date (dd.mm.yyyy): 30. 9.2021   Time (hh:mm): 09:11                        */
+/*  Date (dd.mm.yyyy): 14.10.2021   Time (hh:mm): 06:46                        */
 /*******************************************************************************/
 
 
@@ -349,10 +349,11 @@ GX_CONST GX_UBYTE display_1_STRING_11_English[] = "ECG 118";
 GX_CONST GX_UBYTE display_1_STRING_12_English[] = {0x45, 0x73, 0x70, 0x65, 0x72, 0x61, 0x6e, 0x64, 0x6f, 0x20, 0x63, 0x6f, 0x6e, 0x65, 0x78, 0xc3, 0xa3, 0x6f, 0x2e, 0x2e, 0x2e, 0x00};
 GX_CONST GX_UBYTE display_1_STRING_13_English[] = "Esperando conexao...";
 GX_CONST GX_UBYTE display_1_STRING_14_English[] = "IP:";
+GX_CONST GX_UBYTE display_1_STRING_15_English[] = "Waiting connection...";
 
 /* String Table for display_1 language English                                 */
 
-GX_CONST GX_STRING display_1_English_string_table[23] =
+GX_CONST GX_STRING display_1_English_string_table[24] =
 {
     {GX_NULL, 0},
     {(GX_CONST GX_CHAR *)display_1_HELLO_WORLD_English, sizeof(display_1_HELLO_WORLD_English) - 1},
@@ -376,7 +377,8 @@ GX_CONST GX_STRING display_1_English_string_table[23] =
     {(GX_CONST GX_CHAR *)display_1_STRING_11_English, sizeof(display_1_STRING_11_English) - 1},
     {(GX_CONST GX_CHAR *)display_1_STRING_12_English, sizeof(display_1_STRING_12_English) - 1},
     {(GX_CONST GX_CHAR *)display_1_STRING_13_English, sizeof(display_1_STRING_13_English) - 1},
-    {(GX_CONST GX_CHAR *)display_1_STRING_14_English, sizeof(display_1_STRING_14_English) - 1}
+    {(GX_CONST GX_CHAR *)display_1_STRING_14_English, sizeof(display_1_STRING_14_English) - 1},
+    {(GX_CONST GX_CHAR *)display_1_STRING_15_English, sizeof(display_1_STRING_15_English) - 1}
 };
 
 /*  Language Table                                                             */

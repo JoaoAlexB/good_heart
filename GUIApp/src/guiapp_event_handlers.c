@@ -80,12 +80,12 @@ void setIP(char* ip){
 }
 
 void setConnection(){
-    update_prompt_text(global_widget, P_WAIT, "Conectado ao aplicativo!");
+    update_prompt_text(global_widget, P_WAIT, "Connected!");
     gx_system_canvas_refresh();
 }
 
 void setWaitConn(){
-    update_prompt_text(global_widget, P_WAIT, "Esperando conexao...");
+    update_prompt_text(global_widget, P_WAIT, "Waiting connection...");
     gx_system_canvas_refresh();
 }
 

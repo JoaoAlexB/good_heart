@@ -6,7 +6,7 @@
 /*  Studio User Guide, or visit our web site at azure.com/rtos                 */
 /*                                                                             */
 /*  GUIX Studio Revision 6.1.8.1                                               */
-/*  Date (dd.mm.yyyy): 30. 9.2021   Time (hh:mm): 09:11                        */
+/*  Date (dd.mm.yyyy): 14.10.2021   Time (hh:mm): 06:46                        */
 /*******************************************************************************/
 
 
@@ -102,6 +102,7 @@
 #define GX_STRING_ID_STRING_12 20
 #define GX_STRING_ID_STRING_13 21
 #define GX_STRING_ID_STRING_14 22
-#define DISPLAY_1_STRING_TABLE_SIZE 23
+#define GX_STRING_ID_STRING_15 23
+#define DISPLAY_1_STRING_TABLE_SIZE 24
 
 #endif                                       /* sentry                         */
