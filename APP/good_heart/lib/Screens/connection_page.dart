@@ -2,13 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:good_heart/colors.dart';
+import 'package:good_heart/Theme/colors.dart';
 import 'package:good_heart/main.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:good_heart/globals.dart' as globals;
-import 'communication_with_server.dart';
+import 'package:good_heart/Services/communication_with_server.dart';
 import 'package:logger/logger.dart';
-
 
 var logger = Logger(
   filter: null,
